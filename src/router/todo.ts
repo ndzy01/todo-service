@@ -18,9 +18,9 @@ todo.post('/page', async function (req, res, next) {
       isFinish: 1,
     }
   )
-    .sort({ modifyTime: -1 })
-    .skip((page - 1) * 9)
-    .limit(9)
+    .sort({ modifyTime: 1 })
+    .skip((page - 1) * 10)
+    .limit(10)
   const toDoList = []
   for (let i = 0; i < todos.length; i++) {
     const item = {
@@ -49,6 +49,8 @@ todo.post('/save', function (req: any, res, next) {
   model.ToDoModel.create({
     todoId: utils.getRandomCode(),
     content: req.body.content,
+    createTime: new Date(),
+    modifyTime: new Date(),
   }).then((result) => {
     res.send({
       code: 0,
@@ -72,6 +74,7 @@ todo.post('/edit', function (req: any, res, next) {
     })
   })
 })
+
 todo.post('/finish', function (req: any, res, next) {
   model.ToDoModel.updateOne(
     {
@@ -86,6 +89,19 @@ todo.post('/finish', function (req: any, res, next) {
     })
   })
 })
+
+todo.post('/delete', function (req: any, res, next) {
+  model.ToDoModel.deleteOne({
+    todoId: req.body.todoId,
+  }).then((result) => {
+    res.send({
+      code: 0,
+      msg: 'ok！',
+      data: null,
+    })
+  })
+})
+
 todo.post('/finishPage', async function (req, res, next) {
   const page = parseInt(req.body.page)
   let todos = await model.ToDoModel.find(
@@ -101,8 +117,8 @@ todo.post('/finishPage', async function (req, res, next) {
     }
   )
     .sort({ createTime: -1 })
-    .skip((page - 1) * 9)
-    .limit(9)
+    .skip((page - 1) * 10)
+    .limit(10)
   const toDoList = []
   for (let i = 0; i < todos.length; i++) {
     const item = {
@@ -116,7 +132,7 @@ todo.post('/finishPage', async function (req, res, next) {
   }
   const totalCount = (
     await model.ToDoModel.find({
-      isFinish: 0,
+      isFinish: 1,
     })
   ).length
   res.send({
