@@ -18,7 +18,7 @@ todo.post('/page', async function (req, res, next) {
       isFinish: 1,
     }
   )
-    .sort({ modifyTime: 1 })
+    .sort({ createTime: 1 })
     .skip((page - 1) * 10)
     .limit(10)
   const toDoList = []
